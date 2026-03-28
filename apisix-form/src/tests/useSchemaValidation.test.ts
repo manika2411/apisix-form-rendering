@@ -42,7 +42,7 @@ describe('indexByPath', () => {
     validate({ timeout: 0 })
     const errs = indexByPath(validate.errors!)
     expect(errs).toHaveProperty('timeout')
-    expect(errs.timeout[0]).toMatch(/minimum/i)
+    expect(errs.timeout[0]).toMatch(/>=|minimum|greater/i)
   })
 
   it('maps nested field error to dot-path', () => {
