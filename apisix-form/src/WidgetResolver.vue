@@ -45,7 +45,7 @@ export default defineComponent({
   name: 'WidgetResolver',
   props: {
     schema: { type: Object as () => JSONSchema7, required: true },
-    value: { default: undefined },
+    value: { default: undefined, type: [Object, String, Number, Boolean, Array] as any },
     path: { type: String, required: true },
     label: { type: String, default: '' },
   },
