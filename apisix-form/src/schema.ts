@@ -1,6 +1,5 @@
 import type { JSONSchema7 } from 'json-schema'
 
-// Schema 1: limit-req plugin
 export const limitReqSchema: JSONSchema7 = {
   type: 'object',
   title: 'limit-req Plugin',
@@ -54,7 +53,6 @@ export const limitReqSchema: JSONSchema7 = {
   },
 }
 
-// Schema 2: jwt-auth plugin with oneOf (key-auth vs jwt)
 export const jwtAuthSchema: JSONSchema7 = {
   type: 'object',
   title: 'jwt-auth Plugin',
@@ -115,7 +113,6 @@ export const jwtAuthSchema: JSONSchema7 = {
   ],
 }
 
-// Export both for use in App.vue
 export const plugins = [
   { id: 'limit-req', label: 'limit-req', schema: limitReqSchema },
   { id: 'jwt-auth',  label: 'jwt-auth',  schema: jwtAuthSchema  },

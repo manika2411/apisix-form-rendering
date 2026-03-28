@@ -85,7 +85,6 @@ body {
   gap: 1.25rem;
 }
 
-/* ── Plugin switcher ── */
 .plugin-tabs {
   display: flex;
   gap: 0.5rem;
@@ -114,7 +113,6 @@ body {
   background: #f1f5f9;
 }
 
-/* ── Card ── */
 .card {
   background: #ffffff;
   border-radius: 16px;
@@ -159,7 +157,6 @@ body {
   background: #f8fafc;
 }
 
-/* ── Buttons ── */
 .btn {
   padding: 0.55rem 1.25rem;
   border-radius: 8px;
@@ -174,7 +171,6 @@ body {
 .btn--ghost { background: transparent; color: #64748b; border: 1px solid #e2e8f0; }
 .btn--ghost:hover { background: #f1f5f9; }
 
-/* ── Global inputs ── */
 input[type="text"],
 input[type="number"],
 input[type="email"],
@@ -197,7 +193,6 @@ input:focus, select:focus {
   background: #fff;
 }
 
-/* ── Preview ── */
 .preview {
   background: #0f172a;
   border-radius: 12px;
