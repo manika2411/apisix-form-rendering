@@ -1,5 +1,39 @@
-# Vue 3 + TypeScript + Vite
+# APISIX Schema Form
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+GSoC 2026 — JSON Schema to Form UI renderer for the APISIX Dashboard.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+Renders plugin configuration forms directly from JSON Schema — no manual UI code needed per plugin.
+
+## Features
+
+- All JSON Schema types: `string`, `number`, `integer`, `boolean`, `object`, `array`
+- `enum` → select dropdown or radio group
+- `oneOf` → tab switcher with state isolation
+- `dependencies` + `if/then/else` → conditional fields
+- Live AJV validation with field-level errors
+- Extensible widget registry
+
+## Setup
+
+```bash
+npm install
+npm run dev      # http://localhost:5173
+npm test         # run tests
+```
+
+
+## Structure
+
+```
+src/
+├── SchemaForm.vue           # Root component
+├── WidgetResolver.vue       # Schema type → widget map
+├── conditional-resolver.ts  # allOf / dependencies / if-then-else
+├── useSchemaValidation.ts   # AJV validation composable
+└── widgets/                 # TextInput, NumberInput, Toggle,
+                             # SelectInput, RadioGroup, ArrayField,
+                             # ObjectFieldset, OneOfSelector
+tests/
+├── conditional-resolver.test.ts
+└── useSchemaValidation.test.ts
+```
