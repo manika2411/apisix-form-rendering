@@ -1,19 +1,34 @@
 <template>
   <div class="page">
+
+    <!-- Plugin switcher -->
+    <div class="plugin-tabs">
+      <button
+        v-for="p in plugins"
+        :key="p.id"
+        :class="['plugin-tab', { 'plugin-tab--active': activePlugin.id === p.id }]"
+        @click="switchPlugin(p)"
+      >
+        {{ p.label }}
+      </button>
+    </div>
+
     <div class="card">
       <div class="card__header">
         <div class="card__badge">APISIX Plugin</div>
-        <h1 class="card__title">{{ schema.title }}</h1>
-        <p class="card__subtitle">Configure plugin parameters below. Required fields are marked with *</p>
+        <h1 class="card__title">{{ activePlugin.schema.title }}</h1>
+        <p class="card__subtitle">
+          {{ activePlugin.schema.description ?? 'Configure plugin parameters below. Required fields are marked with *' }}
+        </p>
       </div>
 
       <div class="card__body">
-        <SchemaForm v-model="config" :schema="schema" @submit="onSubmit" />
+        <SchemaForm :key="activePlugin.id" v-model="config" :schema="activePlugin.schema" @submit="onSubmit" />
       </div>
 
       <div class="card__footer">
         <button class="btn btn--ghost" @click="config = {}">Reset</button>
-        <button class="btn btn--primary" @click="handleSubmit">Save Configuration</button>
+        <button class="btn btn--primary" @click="onSubmit(config)">Save Configuration</button>
       </div>
     </div>
 
@@ -21,24 +36,34 @@
       <div class="preview__label">Live JSON Output</div>
       <pre class="preview__code">{{ JSON.stringify(config, null, 2) }}</pre>
     </div>
+
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 import SchemaForm from './SchemaForm.vue'
-import { schema } from './schema'
+import { plugins } from './schema'
 
-const config = ref<Record<string, unknown>>({})
+export default defineComponent({
+  name: 'App',
+  components: { SchemaForm },
+  setup() {
+    const activePlugin = ref(plugins[0])
+    const config = ref<Record<string, unknown>>({})
 
-function onSubmit(value: Record<string, unknown>) {
-  console.log('Submitted:', value)
-}
+    function switchPlugin(p: typeof plugins[0]) {
+      activePlugin.value = p
+      config.value = {}
+    }
 
-function handleSubmit() {
-  console.log('Config:', config.value)
-  alert(JSON.stringify(config.value, null, 2))
-}
+    function onSubmit(value: Record<string, unknown>) {
+      alert(JSON.stringify(value, null, 2))
+    }
+
+    return { plugins, activePlugin, config, switchPlugin, onSubmit }
+  },
+})
 </script>
 
 <style>
@@ -58,6 +83,35 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+}
+
+/* ── Plugin switcher ── */
+.plugin-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: #fff;
+  padding: 0.4rem;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+}
+.plugin-tab {
+  flex: 1;
+  padding: 0.55rem 1rem;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: #64748b;
+  transition: all 0.15s;
+}
+.plugin-tab--active {
+  background: #0f172a;
+  color: #fff;
+}
+.plugin-tab:hover:not(.plugin-tab--active) {
+  background: #f1f5f9;
 }
 
 /* ── Card ── */
@@ -95,9 +149,7 @@ body {
   font-size: 0.85rem;
   color: #94a3b8;
 }
-.card__body {
-  padding: 2rem;
-}
+.card__body { padding: 2rem; }
 .card__footer {
   display: flex;
   justify-content: flex-end;
@@ -117,19 +169,12 @@ body {
   border: none;
   transition: all 0.15s;
 }
-.btn--primary {
-  background: #2563eb;
-  color: white;
-}
+.btn--primary { background: #2563eb; color: white; }
 .btn--primary:hover { background: #1d4ed8; }
-.btn--ghost {
-  background: transparent;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
-}
+.btn--ghost { background: transparent; color: #64748b; border: 1px solid #e2e8f0; }
 .btn--ghost:hover { background: #f1f5f9; }
 
-/* ── Global field inputs ── */
+/* ── Global inputs ── */
 input[type="text"],
 input[type="number"],
 input[type="email"],

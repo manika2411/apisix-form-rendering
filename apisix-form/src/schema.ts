@@ -1,6 +1,7 @@
 import type { JSONSchema7 } from 'json-schema'
 
-export const schema: JSONSchema7 = {
+// Schema 1: limit-req plugin
+export const limitReqSchema: JSONSchema7 = {
   type: 'object',
   title: 'limit-req Plugin',
   required: ['rate', 'burst'],
@@ -53,25 +54,69 @@ export const schema: JSONSchema7 = {
   },
 }
 
-export const oneOfSchema: JSONSchema7 = {
+// Schema 2: jwt-auth plugin with oneOf (key-auth vs jwt)
+export const jwtAuthSchema: JSONSchema7 = {
   type: 'object',
   title: 'jwt-auth Plugin',
-  properties: {
-    auth_type: { type: 'string', title: 'Auth Type', enum: ['key', 'jwt'] },
-  },
+  description: 'Authenticate requests using Key Auth or JWT. Select an auth type below.',
   oneOf: [
     {
       title: 'Key Auth',
-      properties: { key: { type: 'string', title: 'API Key', minLength: 8 } },
+      type: 'object',
       required: ['key'],
+      properties: {
+        key: {
+          type: 'string',
+          title: 'API Key',
+          description: 'Unique key for the consumer. Must be at least 8 characters.',
+          minLength: 8,
+        },
+        hide_credentials: {
+          type: 'boolean',
+          title: 'Hide Credentials',
+          description: 'Strip the API key from the request before forwarding.',
+          default: false,
+        },
+      },
     },
     {
       title: 'JWT Auth',
-      properties: {
-        secret: { type: 'string', title: 'JWT Secret' },
-        exp: { type: 'integer', title: 'Expiry (seconds)', minimum: 1 },
-      },
+      type: 'object',
       required: ['secret'],
+      properties: {
+        secret: {
+          type: 'string',
+          title: 'JWT Secret',
+          description: 'Secret used to sign and verify JWT tokens.',
+          minLength: 1,
+        },
+        algorithm: {
+          type: 'string',
+          title: 'Algorithm',
+          description: 'Signing algorithm.',
+          enum: ['HS256', 'HS512', 'RS256'],
+          default: 'HS256',
+        },
+        exp: {
+          type: 'integer',
+          title: 'Expiry (seconds)',
+          description: 'Token expiry time in seconds.',
+          minimum: 1,
+          default: 86400,
+        },
+        base64_secret: {
+          type: 'boolean',
+          title: 'Base64 Secret',
+          description: 'Set to true if the secret is base64 encoded.',
+          default: false,
+        },
+      },
     },
   ],
 }
+
+// Export both for use in App.vue
+export const plugins = [
+  { id: 'limit-req', label: 'limit-req', schema: limitReqSchema },
+  { id: 'jwt-auth',  label: 'jwt-auth',  schema: jwtAuthSchema  },
+]
